@@ -57,5 +57,68 @@ namespace DataStructuresWithCSharp._2.BinarySearchTree
         {
             return Get(key, _root);
         }
+
+        public TKey Min()
+        {
+            return Min(_root).Key;
+        }
+
+        private Node<TKey, TValue> Min(Node<TKey, TValue> node)
+        {
+            return node.Left == null ? node : Min(node.Left);
+        }
+
+        public TKey Max()
+        {
+            return Max(_root).Key;
+        }
+
+        private Node<TKey, TValue> Max(Node<TKey, TValue> node)
+        {
+            return node.Right == null ? node : Max(node.Right);
+        }
+
+        private Node<TKey, TValue> Delete(Node<TKey, TValue> x, TKey key)
+        {
+            if (x == null)
+            {
+                return null;
+            }
+            var cmp = key.CompareTo(x.Key);
+            if (cmp < 0)
+            {
+                x.Left = Delete(x.Left, key);
+            }
+            else if (cmp > 0)
+            {
+                x.Right = Delete(x.Right, key);
+            }
+            else
+            {
+                if (x.Right == null) return x.Left;
+                if (x.Left == null) return x.Right;
+                Node<TKey, TValue> node = x;
+                x = Min(node.Right);
+                x.Right = DeleteMin(node.Right);
+                x.Left = node.Left;
+            }
+            return x;
+        }
+
+        public void Delete(TKey key)
+        {
+            _root = Delete(_root, key);
+        }
+        private Node<TKey, TValue> DeleteMin(Node<TKey, TValue> node)
+        {
+            if (node.Left == null) return node.Right;
+            node.Left = DeleteMin(node.Left);
+            return node;
+        }
+
+        public void DeleteMin()
+        {
+            _root = DeleteMin(_root);
+        }
     }
 }
