@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace DataStructuresWithCSharp._2.BinarySearchTree
 {
@@ -119,6 +121,23 @@ namespace DataStructuresWithCSharp._2.BinarySearchTree
         public void DeleteMin()
         {
             _root = DeleteMin(_root);
+        }
+
+        private void FindRange(Node<TKey, TValue> x, Queue<TKey> queue, TKey low, TKey high)
+        {
+            if (x == null) return;
+            var cmpLow = low.CompareTo(x.Key);
+            var cmpHigh = high.CompareTo(x.Key);
+            if (cmpLow < 0) FindRange(x.Left, queue, low, high);
+            if (cmpLow <= 0 && cmpHigh >= 0) queue.Enqueue(x.Key);
+            if (cmpHigh > 0) FindRange(x.Right, queue, low, high);
+        }
+
+        public IEnumerable<TKey> FindRange(TKey low, TKey high)
+        {
+            Queue<TKey> queue = new Queue<TKey>();
+            FindRange(_root, queue, low, high);
+            return queue;
         }
     }
 }
