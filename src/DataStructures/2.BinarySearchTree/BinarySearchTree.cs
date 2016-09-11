@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace DataStructuresWithCSharp._2.BinarySearchTree
+namespace DataStructures._2.BinarySearchTree
 {
     public class BinarySearchTree<TKey, TValue> where TKey : IComparable<TKey>
     {

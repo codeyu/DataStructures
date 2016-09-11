@@ -1,4 +1,4 @@
-namespace DataStructuresWithCSharp._2.BinarySearchTree
+namespace DataStructures._2.BinarySearchTree
 {
     public class Node<TKey, TValue>
     {

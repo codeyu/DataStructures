@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
-using DataStructuresWithCSharp._1.BinarySearch;
-using DataStructuresWithCSharp._2.BinarySearchTree;
+using DataStructures._1.BinarySearch;
+using DataStructures._2.BinarySearchTree;
 
 namespace DataStructuresWithCSharp
 {

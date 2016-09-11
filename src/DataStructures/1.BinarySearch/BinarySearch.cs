@@ -1,4 +1,4 @@
-﻿namespace DataStructuresWithCSharp._1.BinarySearch
+﻿namespace DataStructures._1.BinarySearch
 {
     public static class BinarySearch
     {
