@@ -12,7 +12,7 @@ namespace DataStructures._3.BalancedBinaryTree
             if (_root == null)
             {
                 _root = new AVLNode<K, V>(key, value, null, null);
-                _root.BF = 0;
+                _root.Balance = 0;
                 return true;
             }
             p = 0;
@@ -31,7 +31,7 @@ namespace DataStructures._3.BalancedBinaryTree
                 current = (key.CompareTo(prev.Key) < 0 ) ? prev.Left : prev.Right;
             }
             current = new AVLNode<K, V>(key, value, null, null);; //创建新结点
-            current.BF = 0;
+            current.Balance = 0;
             if (key.CompareTo(prev.Key) < 0) //如果插入值小于双亲结点的值
             {
                 prev.Left = current; //成为左孩子
@@ -42,22 +42,22 @@ namespace DataStructures._3.BalancedBinaryTree
             }
             path[p] = current; //将新元素插入数组path的最后
             //修改插入点至根结点路径上各结点的平衡因子
-            int bf = 0;
+            int Balance = 0;
             while (p > 0)
-            {   //bf表示平衡因子的改变量，当新结点插入左子树，则平衡因子+1
+            {   //Balance表示平衡因子的改变量，当新结点插入左子树，则平衡因子+1
                 //当新结点插入右子树，则平衡因子-1
-                bf = (key.CompareTo(path[p - 1].Key) < 0) ? 1 : -1;
-                path[--p].BF += bf; //改变当父结点的平衡因子
-                bf = path[p].BF; //获取当前结点的平衡因子
+                Balance = (key.CompareTo(path[p - 1].Key) < 0) ? 1 : -1;
+                path[--p].Balance += Balance; //改变当父结点的平衡因子
+                Balance = path[p].Balance; //获取当前结点的平衡因子
                 //判断当前结点平衡因子，如果为0表示该子树已平衡，不需再回溯
                 //而改变祖先结点平衡因子，此时添加成功，直接返回
-                if (bf == 0)
+                if (Balance == 0)
                 {
                     return true;
                 }
-                else if (bf == 2 || bf == -2) //需要旋转的情况
+                else if (Balance == 2 || Balance == -2) //需要旋转的情况
                 {
-                    RotateSubTree(bf);
+                    RotateSubTree(Balance);
                     return true;
                 }
             }
@@ -141,16 +141,16 @@ namespace DataStructures._3.BalancedBinaryTree
             //删除完后进行旋转，现在p指向实际被删除的结点
             K key = node.Key;
             while (p > 0)
-            {   //bf表示平衡因子的改变量，当删除的是左子树中的结点时，平衡因子-1
+            {   //Balance表示平衡因子的改变量，当删除的是左子树中的结点时，平衡因子-1
                 //当删除的是右子树的孩子时，平衡因子+1
-                int bf = (key.CompareTo(path[p - 1].Key) <= 0) ? -1 : 1;
-                path[--p].BF += bf; //改变当父结点的平衡因子
-                bf = path[p].BF; //获取当前结点的平衡因子
-                if (bf != 0) //如果bf==0，表明高度降低，继续后上回溯
+                int Balance = (key.CompareTo(path[p - 1].Key) <= 0) ? -1 : 1;
+                path[--p].Balance += Balance; //改变当父结点的平衡因子
+                Balance = path[p].Balance; //获取当前结点的平衡因子
+                if (Balance != 0) //如果Balance==0，表明高度降低，继续后上回溯
                 {
-                    //如果bf为1或-1则说明高度未变，停止回溯，如果为2或-2，则进行旋转
+                    //如果Balance为1或-1则说明高度未变，停止回溯，如果为2或-2，则进行旋转
                     //当旋转后高度不变，则停止回溯
-                    if (bf == 1 || bf == -1 || !RotateSubTree(bf))
+                    if (Balance == 1 || Balance == -1 || !RotateSubTree(Balance))
                     {
                         break;
                     }
@@ -158,13 +158,13 @@ namespace DataStructures._3.BalancedBinaryTree
             }
         }
         //旋转以root为根的子树，当高度改变，则返回true；高度未变则返回false
-        private bool RotateSubTree(int bf) 
+        private bool RotateSubTree(int Balance) 
         {
             bool tallChange = true;
             AVLNode<K, V> root = path[p], newRoot = null;
-            if (bf == 2) //当平衡因子为2时需要进行旋转操作
+            if (Balance == 2) //当平衡因子为2时需要进行旋转操作
             {
-                int leftBF = root.Left.BF;
+                int leftBF = root.Left.Balance;
                 if (leftBF == -1) //LR型旋转
                 {
                     newRoot = LR(root);
@@ -173,15 +173,15 @@ namespace DataStructures._3.BalancedBinaryTree
                 {
                     newRoot = LL(root); //LL型旋转
                 }
-                else //当旋转根左孩子的bf为0时，只有删除时才会出现
+                else //当旋转根左孩子的Balance为0时，只有删除时才会出现
                 {
                     newRoot = LL(root);
                     tallChange = false;
                 }
             }
-            if (bf == -2) //当平衡因子为-2时需要进行旋转操作
+            if (Balance == -2) //当平衡因子为-2时需要进行旋转操作
             {
-                int rightBF = root.Right.BF; //获取旋转根右孩子的平衡因子
+                int rightBF = root.Right.Balance; //获取旋转根右孩子的平衡因子
                 if (rightBF == 1) 
                 {
                     newRoot = RL(root); //RL型旋转
@@ -190,7 +190,7 @@ namespace DataStructures._3.BalancedBinaryTree
                 {
                     newRoot = RR(root); //RR型旋转
                 }
-                else //当旋转根左孩子的bf为0时，只有删除时才会出现
+                else //当旋转根左孩子的Balance为0时，只有删除时才会出现
                 {
                     newRoot = RR(root);
                     tallChange = false;
@@ -220,15 +220,15 @@ namespace DataStructures._3.BalancedBinaryTree
             AVLNode<K, V> rootNext = root.Left;
             root.Left = rootNext.Right;
             rootNext.Right = root;
-            if (rootNext.BF == 1)
+            if (rootNext.Balance == 1)
             {
-                root.BF = 0;
-                rootNext.BF = 0;
+                root.Balance = 0;
+                rootNext.Balance = 0;
             }
-            else //rootNext.BF==0的情况，删除时用
+            else //rootNext.Balance==0的情况，删除时用
             {
-                root.BF = 1;
-                rootNext.BF = -1;
+                root.Balance = 1;
+                rootNext.Balance = -1;
             }
             return rootNext; //rootNext为新子树的根
         }
@@ -240,22 +240,22 @@ namespace DataStructures._3.BalancedBinaryTree
             rootNext.Right = newRoot.Left;
             newRoot.Left = rootNext;
             newRoot.Right = root;
-            switch (newRoot.BF) //改变平衡因子
+            switch (newRoot.Balance) //改变平衡因子
             {
                 case 0:
-                    root.BF = 0;
-                    rootNext.BF = 0;
+                    root.Balance = 0;
+                    rootNext.Balance = 0;
                     break;
                 case 1:
-                    root.BF = -1;
-                    rootNext.BF = 0;
+                    root.Balance = -1;
+                    rootNext.Balance = 0;
                     break;
                 case -1:
-                    root.BF = 0;
-                    rootNext.BF = 1;
+                    root.Balance = 0;
+                    rootNext.Balance = 1;
                     break;
             }
-            newRoot.BF = 0;
+            newRoot.Balance = 0;
             return newRoot; //newRoot为新子树的根
         }
         private AVLNode<K, V> RR(AVLNode<K, V> root) //RR型旋转，返回旋转后的新子树根
@@ -263,15 +263,15 @@ namespace DataStructures._3.BalancedBinaryTree
             AVLNode<K, V> rootNext = root.Right;
             root.Right = rootNext.Left;
             rootNext.Left = root;
-            if (rootNext.BF == -1)
+            if (rootNext.Balance == -1)
             {
-                root.BF = 0;
-                rootNext.BF = 0;
+                root.Balance = 0;
+                rootNext.Balance = 0;
             }
-            else //rootNext.BF==0的情况，删除时用
+            else //rootNext.Balance==0的情况，删除时用
             {
-                root.BF = -1;
-                rootNext.BF = 1;
+                root.Balance = -1;
+                rootNext.Balance = 1;
             }
             return rootNext; //rootNext为新子树的根
         }
@@ -283,22 +283,22 @@ namespace DataStructures._3.BalancedBinaryTree
             rootNext.Left = newRoot.Right;
             newRoot.Right = rootNext;
             newRoot.Left = root;
-            switch (newRoot.BF) //改变平衡因子
+            switch (newRoot.Balance) //改变平衡因子
             {
                 case 0:
-                    root.BF = 0;
-                    rootNext.BF = 0;
+                    root.Balance = 0;
+                    rootNext.Balance = 0;
                     break;
                 case 1:
-                    root.BF = 0;
-                    rootNext.BF = -1;
+                    root.Balance = 0;
+                    rootNext.Balance = -1;
                     break;
                 case -1:
-                    root.BF = 1;
-                    rootNext.BF = 0;
+                    root.Balance = 1;
+                    rootNext.Balance = 0;
                     break;
             }
-            newRoot.BF = 0;
+            newRoot.Balance = 0;
             return newRoot; //newRoot为新子树的根
         }
     }

@@ -12,7 +12,7 @@ namespace DataStructures._3.BalancedBinaryTree
         /// <summary>
         /// 增加一个高度信息
         /// </summary>
-        public int BF;
+        public int Balance;
 
         /// <summary>
         /// 节点中的附加值
